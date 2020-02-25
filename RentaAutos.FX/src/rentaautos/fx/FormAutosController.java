@@ -5,12 +5,9 @@
  */
 package rentaautos.fx;
 
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -33,7 +30,6 @@ import javafx.stage.Stage;
 import rentaautos.bl.Autos;
 import rentaautos.bl.AutosServicio;
 
-
 /**
  * FXML Controller class
  *
@@ -46,32 +42,31 @@ public class FormAutosController implements Initializable {
    @FXML
    private TableColumn<Autos, Integer> columnaId;
    
-      @FXML
+    @FXML
    private TableColumn<Autos, String> columnaMarcas;
+    
+    @FXML
+   private TableColumn<Autos, String> colCategoria;
+    
+    @FXML
+   private TableColumn<Autos, Double> colPrecio;
+    
+    @FXML
+   private TableColumn<Autos, Integer> colExistencia;
+    
+    @FXML
+   private TableColumn<Autos, Boolean> colActivo;
       
-      @FXML
-   private TableColumn columnaEditar;
+    @FXML
+   private TableColumn colEditar;
+                 
+    @FXML
+   private TableColumn colEliminar;  
       
-        
-      @FXML
-   private TableColumn columnaEliminar;
-      
-          @FXML
-   private TableColumn <Autos, String > columnaCategoria;
-      
-          
-       @FXML
-   private TableColumn <Autos, Integer > columAutosD;
-
-        @FXML
-   private TableColumn <Autos, Double > columnPrecio;
-       ObservableList<Autos> data;
-       
      @FXML
-   private TextField txtBuscar;
-     
-     
- 
+    private TextField txtBuscar;
+      
+      ObservableList<Autos> data;
       
       AutosServicio servicio;
    
@@ -85,13 +80,17 @@ public class FormAutosController implements Initializable {
         servicio = new  AutosServicio();
         
         columnaId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        columnaMarcas.setCellValueFactory(new PropertyValueFactory("marcas"));
-        columnaCategoria.setCellValueFactory(c-> new SimpleStringProperty(c.getValue().getCategoria().getMarcas()));
-        columnPrecio.setCellValueFactory(new PropertyValueFactory<>("PrecioxDia"));
-        columAutosD.setCellValueFactory(new PropertyValueFactory<>("AutosDisponibles"));
+        columnaMarcas.setCellValueFactory(new PropertyValueFactory("Marcas"));
+        colCategoria.setCellValueFactory(c-> new SimpleStringProperty(c.getValue()
+                .getAutosCategoria().getMarcas()));
+        colPrecio.setCellValueFactory(new PropertyValueFactory<>("Precio"));
+        colExistencia.setCellValueFactory(new PropertyValueFactory<>("Existencia"));
+        colActivo.setCellValueFactory(new PropertyValueFactory<>("Activo"));
+
+
+        definirColumnaEditar();
+        definirColumnaEliminar();
         
-        definirColumEditar();
-        definirColumnEliminar();
         
         cargarDatos();
        
@@ -104,15 +103,16 @@ public class FormAutosController implements Initializable {
      }
      
      public String guardar(Autos auto){
-         String resultado =  servicio.guardar(auto);
-         if(resultado.equals("")){
-              cargarDatos();
-         }
-         return resultado;
+          String resultado=servicio.guardar(auto);
+          if(resultado.equals(""))
+          {
+           cargarDatos();   
+          }
+          return resultado;
      }
-     
-     public void buscar(){
-      cargarDatos();
+     public void buscar()
+     {
+       cargarDatos();
      }
 
     private void abrirVentanaModal(Autos auto,String titulo) throws IOException {
@@ -133,99 +133,86 @@ public class FormAutosController implements Initializable {
     }
 
     private void cargarDatos() {
-        if(txtBuscar.getText()== null || txtBuscar.getText().equals("")){
-            data = FXCollections.observableArrayList(servicio.ObtenerAutos()); 
-        }else{
-            data = FXCollections.observableArrayList(servicio.ObtenerAutos(txtBuscar.getText()));
-        }
-       
-        
+      if(txtBuscar.getText()==null||txtBuscar.getText().equals("")){
+       data = FXCollections.observableArrayList(servicio.ObtenerAutos());   
+      }else{
+       data = FXCollections.observableArrayList(servicio.ObtenerAutos(txtBuscar.getText()));   
+      }
        tableView.setItems(data);
        tableView.refresh();
        
     }
 
-    private void definirColumEditar() {
-        columnaEditar.setCellFactory(param ->  new TableCell<String, String>(){
-           final Button button = new Button("Editar");
-           
-           
-           @Override
-           public void updateItem(String item, boolean empty){
-               super.updateItem(item, empty);
-               if(empty)
-               {
-                   setGraphic(null);
-                   setText(null);
-               }
-               else{
-               button.setOnAction(event ->{
-                   Autos auto = (Autos)getTableRow().getItem();
-              
-                 
+    private void definirColumnaEditar() {
+        colEditar.setCellFactory(param-> new TableCell<String , String>(){
+            final Button btn=new Button("Editar");
+            
+            @Override
+            public void updateItem(String item,boolean empty)
+            {
+              super.updateItem(item, empty);
+              if(empty)
+              {
+                  setGraphic(null);
+                  setText(null);
+              }else{
+                  btn.setOnAction(event->{
+                  Autos auto=(Autos) getTableRow().getItem();
+                      try {
+                          abrirVentanaModal(auto,"Editar Autos");
+                      } catch (Exception e) {
+                      }
                   
-                   try {
-                       abrirVentanaModal(auto, "Editar Autos");
-                   } catch (IOException ex) {
-                      Logger.getLogger(FormAutosController.class.getName()).log(Level.SEVERE, null, ex);
-                   }
-                 
-                   
-               });
-               
-               setGraphic(button);
-               setText(null);
-               
-           }
-           }
+             
+                  });
+                  setGraphic(btn);
+                  setText(null);
+              }
+            }
+            
+            
         });
     }
 
-   
-
-    private void definirColumnEliminar() {
-        columnaEliminar.setCellFactory(param ->  new TableCell<String, String>(){
-           final Button button = new Button("Elimitar");
-           
-           
-           @Override
-           public void updateItem(String item, boolean empty){
-               super.updateItem(item, empty);
-               if(empty)
-               {
-                   setGraphic(null);
-                   setText(null);
-               }
-               else{
-               button.setOnAction(event ->{
-                   Autos auto = (Autos)getTableRow().getItem();
+    private void definirColumnaEliminar() {
+      colEliminar.setCellFactory(param-> new TableCell<String , String>(){
+            final Button btn=new Button("Eliminar");
+            
+            @Override
+            public void updateItem(String item,boolean empty)
+            {
+              super.updateItem(item, empty);
+              if(empty)
+              {
+                  setGraphic(null);
+                  setText(null);
+              }else{
+                  btn.setOnAction(event->{
+                  Autos auto=(Autos) getTableRow().getItem();
+                 quitar(auto);
+                  
+             
+                  });
+                  setGraphic(btn);
+                  setText(null);
+              }
+            }
+         });  
+        
+    }
+ private void quitar(Autos auto) {
+             Alert alert=new Alert(AlertType.CONFIRMATION,
+             "¿Esta seguro que desea eliminar el vehiculo"+auto.getMarcas()+"?",
+               ButtonType.YES,ButtonType.NO);
+             
+             alert.showAndWait();
+             if(alert.getResult()==ButtonType.YES){
+               servicio.eliminar(auto);
+               cargarDatos();
+             }
+             
+            
               
-                 eliminar(auto);
-                 
-                   
-               });
-               
-               setGraphic(button);
-               setText(null);
-               
-           }
-           }
-        });
-    }
-     
-    
-    private void eliminar(Autos auto){
-        Alert alert = new Alert (AlertType.CONFIRMATION, 
-        "Seguro que desea eliminar este registro",
-        ButtonType.YES, ButtonType.NO);
-        alert.showAndWait();
-        if(alert.getResult()== ButtonType.YES){
-            servicio.eliminar(auto);
-            cargarDatos();
-        }
-      
-    }
-    }
-
+          }
    
-
+}

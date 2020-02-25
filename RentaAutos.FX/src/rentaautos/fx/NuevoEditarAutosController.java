@@ -14,13 +14,14 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.util.converter.NumberStringConverter;
 import rentaautos.bl.Autos;
-import rentaautos.bl.Categoria;
-import rentaautos.bl.CategoriaServicio;
+import rentaautos.bl.AutosCategoria;
+import rentaautos.bl.CategoriasAutoServicio;
 
 /**
  * FXML Controller class
@@ -39,18 +40,21 @@ public class NuevoEditarAutosController implements Initializable {
    @ FXML
     TextField txtMarcas;
    
-     @ FXML
+   @ FXML
+    ComboBox cmbCategoria;
+   
+    @ FXML
     TextField txtPrecio;
-     
-       @ FXML
-    TextField txtAutosD;
-       
-         @ FXML
-    ComboBox comboCategoria;
+    
+    @ FXML
+    TextField txtExistencia;
+    
+    @ FXML
+    CheckBox chActivo;
     
      private FormAutosController controller;
      private Autos auto;
-     private CategoriaServicio categoriaServicio;
+     private CategoriasAutoServicio categoriasAutosServicio;
      
      
      public void setController(FormAutosController controller){
@@ -62,11 +66,16 @@ public class NuevoEditarAutosController implements Initializable {
      public void setAutos(Autos auto){
          this.auto = auto;
       
-         txtId.textProperty().bindBidirectional(auto.idProperty(), new NumberStringConverter());
+      txtId.textProperty().bindBidirectional(auto.idProperty(), new NumberStringConverter());
       txtMarcas.textProperty().bindBidirectional(auto.MarcasProperty());
-      txtPrecio.textProperty().bindBidirectional(auto.PrecioxDiaProperty(),new NumberStringConverter() ); 
-      txtAutosD.textProperty().bindBidirectional(auto.AutosDisponibleProperty(), new NumberStringConverter());
-      comboCategoria.valueProperty().bindBidirectional(auto.categoriaProperty()); 
+      cmbCategoria.valueProperty().bindBidirectional(auto.AutosCategoriaProperty());
+      txtPrecio.textProperty().bindBidirectional(auto.precioProperty(), new NumberStringConverter());
+      txtExistencia.textProperty().bindBidirectional(auto.existenciaProperty(), new NumberStringConverter());
+      chActivo.selectedProperty().bindBidirectional(auto.activoProperty());
+
+            
+
+        
          
      }
     /**
@@ -74,25 +83,26 @@ public class NuevoEditarAutosController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-           categoriaServicio = new CategoriaServicio();
-           
-           ObservableList<Categoria> data = FXCollections.observableArrayList(categoriaServicio.ObtenerCategoria());
-           comboCategoria.setItems(data);
-        
+    categoriasAutosServicio=new CategoriasAutoServicio();
+    
+    ObservableList<AutosCategoria>data= FXCollections.observableArrayList(categoriasAutosServicio.obtenerCategorias());
+    
+      cmbCategoria.setItems(data);
     }  
     public void aceptar(){
-        String resultado = controller.guardar(auto);
+        String resultado=controller.guardar(auto);
         if(resultado.equals(""))
         {
-        cerrar();
+             cerrar();
+        }else{
+            Alert alert=new Alert(AlertType.ERROR);
+            alert.setTitle("Producto");
+            alert.setHeaderText("Errores de validacion");
+            alert.setContentText(resultado);
+            alert.showAndWait();
         }
-        else {
-                Alert alert = new Alert(AlertType.ERROR);
-                alert.setTitle("autos");
-                alert.setHeaderText("Error de Validacion de Datos");
-                alert.setContentText(resultado);
-                alert.showAndWait();
-                }
+       
+        
     }
     
     public void cancelar(){

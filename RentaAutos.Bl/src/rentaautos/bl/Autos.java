@@ -5,6 +5,7 @@
  */
 package rentaautos.bl;
 
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -17,19 +18,20 @@ import javafx.beans.property.SimpleStringProperty;
 public class Autos {
     
     private SimpleIntegerProperty id;
-    private SimpleStringProperty marcas;
-    private SimpleDoubleProperty precioxdia;
-    private  SimpleIntegerProperty autosdisponibles;
-    private SimpleObjectProperty categoria;
-    private SimpleStringProperty Matricula;
+    private SimpleStringProperty Marcas;
+    private SimpleObjectProperty AutosCategoria;
+    private SimpleDoubleProperty precio;
+    private SimpleIntegerProperty existencia;
+    private SimpleBooleanProperty activo;
     
     public Autos()
     {
         id= new SimpleIntegerProperty();
-        marcas =new SimpleStringProperty();
-        categoria = new SimpleObjectProperty();
-        precioxdia= new SimpleDoubleProperty ();       
-        autosdisponibles = new SimpleIntegerProperty();
+        Marcas =new SimpleStringProperty();
+        AutosCategoria=new SimpleObjectProperty();
+        precio=new SimpleDoubleProperty();
+        existencia=new SimpleIntegerProperty();
+        activo=new SimpleBooleanProperty(true);
     }
 
     public Integer getId() {
@@ -46,56 +48,67 @@ public class Autos {
     }
 
     public String getMarcas() {
-        return marcas.get();
+        return Marcas.get();
     }
 
-    public void setMarcas(String marcas) {
-        this.marcas.setValue(marcas);
+    public void setMarcas(String Marcas) {
+        this.Marcas.setValue(Marcas);
 
     }
     
     public SimpleStringProperty MarcasProperty(){
-        return marcas;
+        return Marcas;
     }
-    
-    
-    public int getAutosDisponibles() {
-        return autosdisponibles.get();
-    }
-
-    public void setAutosDisponibles(Integer autosdisponibles) {
-        this.autosdisponibles.setValue(autosdisponibles);
-
-    }
-    
-    public SimpleIntegerProperty AutosDisponibleProperty(){
-        return autosdisponibles;
+    //////////////////////////////////////////////////////////
+    public Double getPrecio() {
+        return precio.get();
     }
 
-    
-    public Double getPrecioxDia() {
-        return precioxdia.get();
-    }
-    public void setPrecioxDia(Double precioxdia) {
-        this.precioxdia.set(precioxdia);
+    public void setPrecio(Double precio) {
+        this.precio.setValue(precio);
+
     }
     
-     
-    public SimpleDoubleProperty PrecioxDiaProperty(){
-        return precioxdia;
+    public SimpleDoubleProperty precioProperty(){
+        return precio;
+    }
+    /////////////////////////////////////////////////
+    public Integer getExistencia() {
+        return existencia.get();
+    }
+
+    public void setExistencia(Integer existencia) {
+        this.existencia.setValue(existencia);
+
     }
     
-       
-    public Categoria getCategoria() {
-        return (Categoria) categoria.get();
+    public SimpleIntegerProperty existenciaProperty(){
+        return existencia;
     }
-    public void setCategoria(Categoria categoria) {
-        this.categoria.set(categoria);
+   //////////////////////////////////////////////////////
+    public Boolean getActivo() {
+        return activo.get();
+    }
+
+    public void setActivo(Boolean activo) {
+        this.activo.setValue(activo);
+
     }
     
-     
-    public SimpleObjectProperty categoriaProperty(){
-        return categoria;
+    public SimpleBooleanProperty activoProperty(){
+        return activo;
+    }
+    //////////////////////////////////////////////////
+    public AutosCategoria getAutosCategoria() {
+        return (AutosCategoria) AutosCategoria.get();
+    }
+
+    public void setAutosCategoria(AutosCategoria AutosCategoria) {
+        this.AutosCategoria.setValue(AutosCategoria);
+
     }
     
+    public SimpleObjectProperty AutosCategoriaProperty(){
+        return AutosCategoria;
+    }
 }
