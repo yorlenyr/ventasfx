@@ -11,19 +11,30 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+
 /**
  *
  * @author dell
  */
 public class RentaAutosFX extends Application {
+
+    public static Boolean isSplashLoaded = false;
+    
+    static Stage stage;
+
+    public static Stage getStage() {
+        return stage;
+    }
     
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("FormAutos.fxml"));
+        RentaAutosFX.stage = stage;
+        Parent root = FXMLLoader.load(getClass().getResource("/rentaautos/fx/Menu/main.fxml"));
         
         Scene scene = new Scene(root);
         
         stage.setScene(scene);
+        stage.setTitle("Renta Autos");
         stage.show();
     }
 
